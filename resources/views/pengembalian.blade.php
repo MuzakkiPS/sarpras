@@ -62,40 +62,43 @@
                 @endif
 
                 <div class="overflow-x-auto bg-white shadow-md rounded p-4">
-                    <table class="w-full table-auto">
-                        <thead class="bg-blue-900 text-white">
-                            <tr>
-                                <th class="px-4 py-2 text-left">No</th>
-                                <th class="px-4 py-2 text-left">Nama Peminjam</th>
-                                <th class="px-4 py-2 text-left">Barang</th>
-                                <th class="px-4 py-2 text-left">Tanggal Kembali</th>
-                                <th class="px-4 py-2 text-left">Foto Barang</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($pengembalians as $index => $data)
-                                <tr class="border-t">
-                                    <td class="px-4 py-2">{{ $index + 1 }}</td>
-                                    <td class="px-4 py-2">{{ $data->peminjaman->user->name ?? '-' }}</td>
-                                    <td class="px-4 py-2">{{ $data->peminjaman->barang->nama_barang ?? '-' }}</td>
-                                    <td class="px-4 py-2">
-                                        {{ \Carbon\Carbon::parse($data->tanggal_pengembalian)->format('d-m-Y') ?? '-' }}
-                                    </td>
-                                    <td class="px-4 py-2">
-                                        @if($data->peminjaman->barang->foto)
-                                            <img src="{{ asset('storage/' . $data->peminjaman->barang->foto) }}" alt="Foto Barang" class="w-20 h-20 object-cover rounded">
-                                        @else
-                                            <span class="text-gray-500 italic">Tidak ada foto</span>
-                                        @endif
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="5" class="text-center text-gray-500 py-4">Tidak ada data pengembalian.</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                  <table class="w-full table-auto">
+    <thead class="bg-blue-900 text-white">
+        <tr>
+            <th class="px-4 py-2 text-left">No</th>
+            <th class="px-4 py-2 text-left">Nama Peminjam</th>
+            <th class="px-4 py-2 text-left">Barang</th>
+            <th class="px-4 py-2 text-left">Tanggal Kembali</th>
+            <th class="px-4 py-2 text-left">Keterangan</th>
+            <th class="px-4 py-2 text-left">Status</th>
+            <th class="px-4 py-2 text-left">Foto Pengembalian</th>
+        </tr>
+    </thead>
+    <tbody>
+        @forelse ($pengembalians as $index => $data)
+            <tr class="border-t">
+                <td class="px-4 py-2">{{ $index + 1 }}</td>
+                <td class="px-4 py-2">{{ $data->peminjaman->user->name ?? '-' }}</td>
+                <td class="px-4 py-2">{{ $data->peminjaman->barang->nama_barang ?? '-' }}</td>
+                <td class="px-4 py-2">{{ \Carbon\Carbon::parse($data->tanggal_pengembalian)->format('d-m-Y') ?? '-' }}</td>
+                <td class="px-4 py-2">{{ $data->keterangan ?? '-' }}</td>
+                <td class="px-4 py-2">{{ $data->status ?? '-' }}</td>
+                <td class="px-4 py-2">
+                    @if($data->foto_pengembalian)
+                        <img src="{{ asset('storage/' . $data->foto_pengembalian) }}" alt="Foto Pengembalian" class="w-20 h-20 object-cover rounded">
+                    @else
+                        <span class="text-gray-500 italic">Tidak ada foto</span>
+                    @endif
+                </td>
+            </tr>
+        @empty
+            <tr>
+                <td colspan="7" class="text-center text-gray-500 py-4">Tidak ada data pengembalian.</td>
+            </tr>
+        @endforelse
+    </tbody>
+</table>
+
                 </div>
             </main>
         </div>

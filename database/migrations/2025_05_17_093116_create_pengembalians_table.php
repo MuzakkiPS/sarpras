@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-       Schema::create('pengembalians', function (Blueprint $table) {
-    $table->id();
-    $table->foreignId('peminjaman_id')->constrained('peminjamans')->onDelete('cascade');
-
-    $table->date('tanggal_pengembalian');
-    $table->string('foto_pengembalian')->nullable(); // menyimpan nama file foto
-    $table->timestamps();
-});
-
+        Schema::create('pengembalians', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('peminjaman_id')->constrained('peminjamans')->onDelete('cascade');
+            $table->date('tanggal_pengembalian');
+            $table->string('foto_pengembalian')->nullable(); // menyimpan nama file foto
+            $table->string('keterangan')->nullable();         // kolom tambahan
+            $table->string('status')->default('Baik');        // kolom tambahan, default "Baik"
+            $table->timestamps();
+        });
     }
 
     /**

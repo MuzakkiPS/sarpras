@@ -14,46 +14,52 @@ class PengembalianController extends Controller
         return view('pengembalian', compact('pengembalians'));
     }
 
- public function store(Request $request)
-    {
-        // Validasi input
-        $request->validate([
-            'peminjaman_id' => 'required|exists:peminjamans,id',
-            'tanggal_pengembalian' => 'required|date',
-            'foto_pengembalian' => 'nullable|image|max:2048',
-        ]);
+public function store(Request $request)
+{
+    $request->validate([
+        'peminjaman_id' => 'required|exists:peminjamans,id',
+        'tanggal_pengembalian' => 'required|date',
+        'keterangan' => 'nullable|string',
+        'status' => 'nullable|string',
+        'foto_pengembalian' => 'nullable|image|max:2048'
+    ]);
 
-        // Ambil data peminjaman berdasarkan ID yang dikirim
-        $peminjaman = Peminjaman::with('pengembalian')->find($request->peminjaman_id);
-
-        // Cek apakah peminjaman sudah dikembalikan
-        if ($peminjaman->status === 'Sudah Dikembalikan') {
-
-            return response()->json(['message' => 'Barang sudah dikembalikan.'], 400);
-        }
-
-        // Simpan foto jika ada
-        $fotoPath = null;
-        if ($request->hasFile('foto_pengembalian')) {
-            $fotoPath = $request->file('foto_pengembalian')->store('foto_pengembalian', 'public');
-        }
-
-        // Buat data pengembalian
-        $pengembalian = Pengembalian::create([
-            'peminjaman_id' => $peminjaman->id,
-            'tanggal_pengembalian' => $request->tanggal_pengembalian,
-            'foto_pengembalian' => $fotoPath,
-        ]);
-
-        // Update status peminjaman
-        $peminjaman->status = 'Sudah Dikembalikan';
-        $peminjaman->save();
-
+    // Cek apakah pengembalian untuk peminjaman ini sudah ada
+    if (Pengembalian::where('peminjaman_id', $request->peminjaman_id)->exists()) {
         return response()->json([
-            'message' => 'Pengembalian berhasil dicatat.',
-            'pengembalian' => $pengembalian,
-        ]);
+            'message' => 'Peminjaman ini sudah dikembalikan.'
+        ], 400);
     }
+
+
+     $fotoPath = null;
+    if ($request->hasFile('foto_pengembalian')) {
+        $fotoPath = $request->file('foto_pengembalian')->store('foto_pengembalian', 'public');
+    }
+
+    
+
+    // Simpan data pengembalian
+    $pengembalian = Pengembalian::create([
+        'peminjaman_id' => $request->peminjaman_id,
+        'tanggal_pengembalian' => $request->tanggal_pengembalian,
+        'keterangan' => $request->keterangan,
+        'status' => $request->status ?? 'Baik',
+        'foto_pengembalian' => $fotoPath
+    ]);
+
+    // Optional: update status peminjaman jadi 'disetujui' (jika sesuai)
+    // atau update jadi status kustom kalau enum sudah ditambahkan
+    Peminjaman::where('id', $request->peminjaman_id)
+              ->update(['status' => 'disetujui']); // hanya jika enum-nya sesuai
+
+    return response()->json([
+        'message' => 'Pengembalian berhasil dicatat.',
+        'data' => $pengembalian
+    ], 201);
+}
+
+
 
     // Endpoint untuk melihat detail pengembalian beserta gambar
     public function show($id)

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Barang;
+use App\Models\Peminjaman;
 
 class AuthController extends Controller
 {
@@ -80,11 +82,15 @@ class AuthController extends Controller
         return redirect('/login')->with('success', 'Berhasil logout!');
     }
 
-    public function showDashboard()
-    {
-        $users = User::all();
-        return view('dashboard', compact('users'));
-    }
+   public function showDashboard()
+{
+    $jumlahBarang = Barang::count();
+    $jumlahUser = User::count();
+    $jumlahPeminjaman = Peminjaman::count();
+    $jumlahBelumKembali = Peminjaman::where('status', '!=', 'dikembalikan')->count();
+
+    return view('dashboard', compact('jumlahBarang', 'jumlahUser', 'jumlahPeminjaman', 'jumlahBelumKembali'));
+}
 
     public function showUsers()
     {
