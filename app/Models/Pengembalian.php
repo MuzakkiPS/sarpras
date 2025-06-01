@@ -9,15 +9,16 @@ class Pengembalian extends Model
 {
     use HasFactory;
 
-protected $table = 'pengembalians';
+    protected $table = 'pengembalians';
 
   protected $fillable = [
     'peminjaman_id',
-    'tanggal_pengembalian',
     'foto_pengembalian',
     'keterangan',
-    'status',
+    'tanggal_pengembalian',
+    'status', // bisa null dulu
 ];
+
 
     public function peminjaman()
     {

@@ -10,6 +10,7 @@ use App\Http\Controllers\PengembalianController;
 
 
 Route::get('/pengembalian', [PengembalianController::class, 'index'])->name('pengembalian.index');
+Route::put('/pengembalian/{id}/update-status', [PengembalianController::class, 'updateStatus'])->name('pengembalian.updateStatus');
 
 /*
 |--------------------------------------------------------------------------

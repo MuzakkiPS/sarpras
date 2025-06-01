@@ -16,8 +16,8 @@ return new class extends Migration
             $table->foreignId('peminjaman_id')->constrained('peminjamans')->onDelete('cascade');
             $table->date('tanggal_pengembalian');
             $table->string('foto_pengembalian')->nullable(); // menyimpan nama file foto
-            $table->string('keterangan')->nullable();         // kolom tambahan
-            $table->string('status')->default('Baik');        // kolom tambahan, default "Baik"
+            $table->string('keterangan')->nullable();       // kolom tambahan
+            $table->enum('status', ['Menunggu konfirmasi', 'disetujui', 'ditolak'])->default('Menunggu konfirmasi');
             $table->timestamps();
         });
     }

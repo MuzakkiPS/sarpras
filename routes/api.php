@@ -10,11 +10,13 @@ use App\Http\Controllers\Api\BarangControllerApi;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\PengembalianController;
 
-Route::post('/pengembalian', [PengembalianController::class, 'store']);
+Route::post('/pengembalian/{peminjaman_id}', [PengembalianController::class, 'store']);
+
 
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/peminjaman', [PeminjamanController::class, 'store']);
+     Route::get('/peminjaman', [PeminjamanController::class, 'indexApi']);                                                                                                     
 });
 
 
